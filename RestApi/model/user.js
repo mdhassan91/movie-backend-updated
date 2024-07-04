@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   },
   isSuperAdmin: { type: Boolean, default: false },
   isAdmin: { type: Boolean, default: false },
+  verifyCode: { type: Number, default: "99999999" },
   Logins: [
     {
       Date: { type: Date, default: Date.now() },

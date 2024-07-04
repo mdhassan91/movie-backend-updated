@@ -2,6 +2,7 @@ var express = require("express");
 const Event = require("../model/event");
 const { auth } = require("../middleware/auth");
 const User = require("../model/user");
+const { isEmail } = require("validator");
 
 var router = express.Router();
 
@@ -14,17 +15,21 @@ router.get("/", async (req, res) => {
   });
 });
 
-router.put("/addadmin", auth, async (req, res) => {
+router.put("/", auth, async (req, res) => {
   const { Email } = req.body;
-  //TODO validate req.body
+  if (!isEmail(Email))
+    return res.status(400).json({ ok: false, msg: "check input" });
+
   await User.create({
     Email: Email,
   });
   return res.status(200).json({ ok: true, msg: "new Admin added" });
 });
-router.delete("/addadmin", auth, async (req, res) => {
+router.delete("/", auth, async (req, res) => {
   const { Email } = req.body;
-  //TODO validate req.body
+  if (!isEmail(Email))
+    return res.status(400).json({ ok: false, msg: "check input" });
+
   await User.create({
     Email: Email,
   });

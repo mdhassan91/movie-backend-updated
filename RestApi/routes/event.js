@@ -2,12 +2,16 @@ var express = require("express");
 const Event = require("../model/event");
 const { auth } = require("../middleware/auth");
 const User = require("../model/user");
+const { isDate } = require("validator");
+const { isEnglish, isNumeric } = require("../../utils/validators");
 
 var router = express.Router();
 
 router.get("/", auth, async (req, res) => {
   const { all } = req.body;
-  //TODO validate req.body
+  if (typeof all != Boolean)
+    return res.status(400).json({ ok: false, msg: "check input" });
+
   var data;
   if (all) {
     data = Event.find({});
@@ -19,13 +23,29 @@ router.get("/", auth, async (req, res) => {
 });
 router.delete("/", auth, async (req, res) => {
   const { eventID } = req.body;
-  //TODO validate req.body
-  Event.findOneAndDelete({ _id: eventID, eventAdmin: req.user._id });
-  return res.status(200).json({ ok: true, msg: "event deleted" });
+
+  var event = Event.findOneAndDelete(
+    {
+      _id: eventID,
+      eventAdmin: req.user._id,
+    },
+    { new: true }
+  );
+  if (event) return res.status(200).json({ ok: true, msg: "event deleted" });
+  return res.status(404).json({ ok: false, msg: "event not fount" });
 });
 router.post("/", auth, async (req, res) => {
-  const { eventID, eventDate, eventDetails, Rows, seatsPerRow } = req.body;
-  //TODO validate req.body
+  const { eventID, eventName, eventDate, eventDetails, Rows, seatsPerRow } =
+    req.body;
+  if (
+    !isDate(eventDate) ||
+    !isEnglish(eventDetails) ||
+    !isEnglish(eventName) ||
+    !isNumeric(Rows) ||
+    !isNumeric(seatsPerRow)
+  )
+    return res.status(400).json({ ok: false, msg: "check input" });
+
   var seats = [];
   for (let i = 1; i < Rows; i++) {
     for (let j = 1; j < seatsPerRow; j++) {
@@ -35,19 +55,34 @@ router.post("/", auth, async (req, res) => {
       });
     }
   }
-  await Event.findOneAndUpdate(
+  Event.findOneAndUpdate(
     { eventAdmin: req.user._id, _id: eventID },
     {
       eventDate,
       eventDetails,
       seats,
-    }
-  );
-  return res.status(200).json({ ok: true, msg: "event edited successfully" });
+      eventName,
+    },
+    { new: true }
+  ).then((doc, err) => {
+    if (doc)
+      return res
+        .status(200)
+        .json({ ok: true, msg: "event edited successfully" });
+    else if (err)
+      return res.status(404).json({ ok: true, msg: "event not found" });
+  });
 });
 router.put("/", auth, async (req, res) => {
   const { eventDate, eventName, eventDetails, Rows, seatsPerRow } = req.body;
-  //TODO validate req.body
+  if (
+    !isDate(eventDate) ||
+    !isEnglish(eventDetails) ||
+    !isEnglish(eventName) ||
+    !isNumeric(Rows) ||
+    !isNumeric(seatsPerRow)
+  )
+    return res.status(400).json({ ok: false, msg: "check input" });
 
   var seats = [];
   for (let i = 1; i < Rows; i++) {

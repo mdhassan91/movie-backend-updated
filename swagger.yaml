@@ -5,22 +5,43 @@ info:
   license:
    name: Apache 2.0
    url: https://www.apache.org/licenses/LICENSE-2.0.html
-  version: '0.1'
+  version: '0.3'
 servers:
   - url: https://movie.amirrezasoltani.ir
 
 paths:
-  /admin:
-
-    get:
-      tags:
-        - Admin
-      responses:
-        '200':
-          description: OK
   /event:
     put:
       description: "add new event"
+      tags:
+        - Event
+      parameters:
+       - in: header
+         name: x-auth-token
+         schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                eventDate:
+                  type: string
+                eventName:
+                  type: string
+                eventDetails:
+                  type: string
+                Rows:
+                  type: integer
+                seatsPerRow:
+                  type: integer
+      
+      responses:
+        '200':
+          description: OK
+    post:
+      description: "edit event"
       tags:
         - Event
       parameters:
@@ -88,7 +109,13 @@ paths:
       responses:
         '200':
           description: OK 
-  /admin/addadmin:
+  /admin:
+    get:
+      tags:
+        - Admin
+      responses:
+        '200':
+          description: OK
     put:
       description: "add new admin"
       tags:
@@ -189,3 +216,23 @@ paths:
       responses:
         '200':
           description: OK
+  /user/verify:
+    post:
+      description: "register user"
+      tags:
+        - User
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                Email:
+                  type: string
+                verifyCode:
+                  type: string
+      responses:
+        '200':
+          description: "ok"
+        '404':
+          description: :"code wrong or user not found"

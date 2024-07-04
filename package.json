@@ -1,10 +1,11 @@
 {
   "name": "movie-backend",
-  "version": "0.0.1",
+  "version": "0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "testmovie"
+    "test": "testmovie",
+    "start": "node index"
   },
   "author": "Amirreza Soltani",
   "license": "ISC",
@@ -19,6 +20,7 @@
     "pino": "^9.2.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "validator": "^13.12.0",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
