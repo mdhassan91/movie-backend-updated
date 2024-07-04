@@ -1,0 +1,191 @@
+openapi: '3.0.3'
+info:
+  description: API Document for movie website.
+  title: Movie Booking
+  license:
+   name: Apache 2.0
+   url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: '0.1'
+servers:
+  - url: https://movie.amirrezasoltani.ir
+
+paths:
+  /admin:
+
+    get:
+      tags:
+        - Admin
+      responses:
+        '200':
+          description: OK
+  /event:
+    put:
+      description: "add new event"
+      tags:
+        - Event
+      parameters:
+       - in: header
+         name: x-auth-token
+         schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                eventDate:
+                  type: string
+                eventName:
+                  type: string
+                eventDetails:
+                  type: string
+                Rows:
+                  type: integer
+                seatsPerRow:
+                  type: integer
+      
+      responses:
+        '200':
+          description: OK
+    get:
+      description: "get events if all:true you will get all events of DB"
+      tags:
+        - Event
+      parameters:
+       - in: header
+         name: x-auth-token
+         schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:      
+              type: object
+              properties:
+                all:
+                  type: boolean
+      responses:
+        '200':
+          description: OK                
+    delete:
+      tags:
+        - Event
+      parameters:
+       - in: header
+         name: x-auth-token
+         schema:
+            type: string
+      description: "just send event id"
+      requestBody:
+        content:
+          application/json:
+            schema:      
+              type: object
+              properties:
+                eventID:
+                  type: string
+      responses:
+        '200':
+          description: OK 
+  /admin/addadmin:
+    put:
+      description: "add new admin"
+      tags:
+        - Admin
+      parameters:
+       - in: header
+         name: x-auth-token
+         schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                Email:
+                  type: string
+      responses:
+        '200':
+          description: OK
+    delete:
+      description: "remove admin"
+      tags:
+        - Admin
+      parameters:
+       - in: header
+         name: x-auth-token
+         schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                Email:
+                  type: string
+                adminID:
+                   type: string
+      responses:
+        '200':
+          description: OK
+  /user:
+    put:
+      description: "register user"
+      tags:
+        - User
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                Email:
+                  type: string
+      responses:
+        '200':
+          description: OK
+    get:
+      description: "get user info"
+      tags:
+        - User
+      parameters:
+       - in: header
+         name: x-auth-token
+         schema:
+            type: string
+      requestBody:
+        content:
+        
+          application/json:
+            schema:      # Request body contents
+              type: object
+
+      responses:
+        '200':
+          description: OK
+    post:
+      description: "edit user info"
+      tags:
+        - User
+      parameters:
+       - in: header
+         name: x-auth-token
+         schema:
+            type: string
+      requestBody:
+        content:
+        
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                Email:
+                  type: string
+                Password:
+                  type: string
+      responses:
+        '200':
+          description: OK
