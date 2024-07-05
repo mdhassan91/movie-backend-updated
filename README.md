@@ -11,6 +11,8 @@
 
 This is booking movie backend code with nodeJs(express) and mongoDB
 
+Swagger link : https://movie.amirrezasoltani.ir/api-docs
+
 ## Getting Started <a name = "getting_started"></a>
 ``````
 npm i
