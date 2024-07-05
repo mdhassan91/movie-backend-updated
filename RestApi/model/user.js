@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "123",
   },
+  verifiedEmail: { type: Boolean, default: false },
   isSuperAdmin: { type: Boolean, default: false },
   isAdmin: { type: Boolean, default: false },
   verifyCode: { type: Number, default: "99999999" },

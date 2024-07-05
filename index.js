@@ -28,6 +28,8 @@ process.on("uncaughtException", function (err) {
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
+//TODO add route for booking
+
 app.use("/admin", admin);
 app.use("/user", user);
 app.use("/event", event);

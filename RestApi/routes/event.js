@@ -13,15 +13,17 @@ const {
 var router = express.Router();
 
 router.get("/", async (req, res) => {
-  const { all } = req.body;
-  if (typeof all != Boolean)
+  var { all } = req.query;
+  if (all == "true") all = true;
+  if (all == "false") all = false;
+  if (typeof all != "boolean")
     return res.status(400).json({ ok: false, msg: "check input" });
 
   var data;
   if (all) {
-    data = Event.find({});
+    data = await Event.find({});
   } else {
-    data = Event.find({ eventAdmin: req.user._id });
+    data = await Event.find({ eventAdmin: req.user._id });
   }
 
   return res.status(200).json({ ok: true, data: data });

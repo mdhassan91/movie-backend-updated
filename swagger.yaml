@@ -85,14 +85,13 @@ paths:
       description: "get events if all:true you will get all events of DB"
       tags:
         - Event
-      requestBody:
-        content:
-          application/json:
-            schema:      
-              type: object
-              properties:
-                all:
-                  type: boolean
+      parameters:
+        - in: query
+          name: all
+          schema:
+            type: boolean
+          description: if true sends all events
+
       responses:
         '200':
           description: OK                
@@ -178,6 +177,8 @@ paths:
               properties:
                 Email:
                   type: string
+                Password:
+                  type: string
       responses:
         '200':
           description: OK
@@ -243,3 +244,20 @@ paths:
           description: "ok"
         '404':
           description: :"code wrong or user not found"
+  /booking:
+    post:
+      description: "doesn't work"
+      tags:
+        - Booking
+      requestBody:
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                EventID:
+                  type: string
+
+      responses:
+        '200':
+          description: "ok"

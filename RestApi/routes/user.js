@@ -7,16 +7,20 @@ const { isEmail } = require("validator");
 var router = express.Router();
 
 router.put("/", async (req, res) => {
-  const { Email } = req.body;
+  const { Email, Password } = req.body;
   if (!isEmail(Email))
     return res.status(400).json({ ok: false, msg: "check input" });
   var user = await User.exists({ Email: Email });
   if (user)
-    return res.status(400).json({ ok: false, msg: "user already exist" });
+    return res
+      .status(400)
+      .json({ ok: false, msg: "user already exist please login" });
   var verifyCode = Math.floor(Math.random() * (99999 - 10000)) + 10000;
 
-  await User.create({ Email, verifyCode });
-  return res.status(200).json({ ok: true, msg: "new user Added" });
+  await User.create({ Email, verifyCode, Password });
+  return res
+    .status(200)
+    .json({ ok: true, msg: "new user Added please verify email" });
 });
 
 //TODO check for is email verified
@@ -26,6 +30,9 @@ router.post("/login", async (req, res) => {
     return res.status(400).json({ ok: false, msg: "check input" });
   var user = await User.findOne({ Email: Email, Password: Password });
   if (user) {
+    if (!user.verifiedEmail) {
+      //TODO send mail to user
+    }
     var token = user.generateAuthToken();
     return res.status(200).json({ ok: true, data: { token: token } });
   } else {
@@ -50,7 +57,7 @@ router.post("/verify", async (req, res) => {
     return res.status(400).json({ ok: false, msg: "check input" });
   var user = await User.findOneAndUpdate(
     { Email, verifyCode },
-    { verifyCode: "99999999" },
+    { verifyCode: "99999999", verifiedEmail: true },
     { new: true }
   );
 
