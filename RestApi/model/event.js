@@ -7,9 +7,15 @@ const eventSchema = new mongoose.Schema({
   eventDate: { type: Date, required: true },
   eventName: { type: String, required: true },
   eventAdmin: { type: mongoose.Schema.ObjectId, required: true },
+
+  eventType: { type: "String", enum: ["movie", "activity", "event"] },
+  genre: { type: String },
+  activityType: { type: String, enum: ["outdoor", "indoor"] },
+  eventCategory: { type: String },
+
   eventDetails: {
     type: String,
-    default: "please add some details about movie",
+    default: "please add some details about event",
   },
   Seats: [
     {

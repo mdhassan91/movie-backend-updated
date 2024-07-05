@@ -30,6 +30,18 @@ paths:
                   type: string
                 eventName:
                   type: string
+                eventType:
+                  type: string
+                  enum:
+                    - movie
+                    - activity
+                    - event
+                genre:
+                 type: string
+                activityType:
+                 type: string
+                eventCategory:
+                 type: string
                 eventDetails:
                   type: string
                 Rows:
@@ -73,11 +85,6 @@ paths:
       description: "get events if all:true you will get all events of DB"
       tags:
         - Event
-      parameters:
-       - in: header
-         name: x-auth-token
-         schema:
-            type: string
       requestBody:
         content:
           application/json:

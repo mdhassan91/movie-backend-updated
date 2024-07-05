@@ -3,11 +3,16 @@ const Event = require("../model/event");
 const { auth } = require("../middleware/auth");
 const User = require("../model/user");
 const { isDate } = require("validator");
-const { isEnglish, isNumeric } = require("../../utils/validators");
+const {
+  isEnglish,
+  isNumeric,
+  isEventType,
+  isActivityType,
+} = require("../../utils/validators");
 
 var router = express.Router();
 
-router.get("/", auth, async (req, res) => {
+router.get("/", async (req, res) => {
   const { all } = req.body;
   if (typeof all != Boolean)
     return res.status(400).json({ ok: false, msg: "check input" });
@@ -74,13 +79,30 @@ router.post("/", auth, async (req, res) => {
   });
 });
 router.put("/", auth, async (req, res) => {
-  const { eventDate, eventName, eventDetails, Rows, seatsPerRow } = req.body;
+  var {
+    eventDate,
+    eventName,
+    eventDetails,
+    eventType,
+    genre,
+    acitivityType,
+    eventCategory,
+    Rows,
+    seatsPerRow,
+  } = req.body;
+  eventType = eventType.toLowerCase();
+  acitivityType = acitivityType.toLowerCase();
+
   if (
     !isDate(eventDate) ||
     !isEnglish(eventDetails) ||
     !isEnglish(eventName) ||
     !isNumeric(Rows) ||
-    !isNumeric(seatsPerRow)
+    !isNumeric(seatsPerRow) ||
+    !isEnglish(genre) ||
+    !isEnglish(eventCategory) ||
+    !isEventType(eventType) ||
+    !isActivityType(acitivityType)
   )
     return res.status(400).json({ ok: false, msg: "check input" });
 
