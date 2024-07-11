@@ -5,7 +5,7 @@ info:
   license:
    name: Apache 2.0
    url: https://www.apache.org/licenses/LICENSE-2.0.html
-  version: '0.3'
+  version: '0.4'
 servers:
   - url: https://movie.amirrezasoltani.ir
 
@@ -137,7 +137,7 @@ paths:
             schema:      # Request body contents
               type: object
               properties:
-                Email:
+                Username:
                   type: string
       responses:
         '200':
@@ -157,7 +157,7 @@ paths:
             schema:      # Request body contents
               type: object
               properties:
-                Email:
+                Username:
                   type: string
                 adminID:
                    type: string
@@ -175,6 +175,8 @@ paths:
             schema:      # Request body contents
               type: object
               properties:
+                Username:
+                  type: string
                 Email:
                   type: string
                 Password:
@@ -191,12 +193,6 @@ paths:
          name: x-auth-token
          schema:
             type: string
-      requestBody:
-        content:
-        
-          application/json:
-            schema:      # Request body contents
-              type: object
 
       responses:
         '200':
@@ -212,21 +208,22 @@ paths:
             type: string
       requestBody:
         content:
-        
           application/json:
             schema:      # Request body contents
               type: object
               properties:
                 Email:
                   type: string
+                Username:
+                  type: string
                 Password:
                   type: string
       responses:
         '200':
           description: OK
-  /user/verify:
+  /user/login:
     post:
-      description: "register user"
+      description: "login user"
       tags:
         - User
       requestBody:
@@ -235,15 +232,14 @@ paths:
             schema:      # Request body contents
               type: object
               properties:
-                Email:
+                Username:
                   type: string
-                verifyCode:
+                Password:
                   type: string
       responses:
         '200':
           description: "ok"
-        '404':
-          description: :"code wrong or user not found"
+
   /booking:
     post:
       description: "doesn't work"
@@ -257,7 +253,6 @@ paths:
               properties:
                 EventID:
                   type: string
-
       responses:
         '200':
           description: "ok"

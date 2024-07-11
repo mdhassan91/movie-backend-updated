@@ -3,36 +3,42 @@ const Event = require("../model/event");
 const { auth } = require("../middleware/auth");
 const User = require("../model/user");
 const { isEmail } = require("validator");
-
 var router = express.Router();
 
 router.put("/", async (req, res) => {
-  const { Email, Password } = req.body;
-  if (!isEmail(Email))
-    return res.status(400).json({ ok: false, msg: "check input" });
-  var user = await User.exists({ Email: Email });
-  if (user)
+  const { Username, Password, Email } = req.body;
+  //TODO check for empty
+  if (!isEmail(Email)) {
+    return res.status(400).json({ ok: false, msg: "check Email" });
+  }
+  var userMail = await User.exists({ Email: Email });
+  var user = await User.exists({ Username: Username });
+  if (user || userMail)
     return res
       .status(400)
       .json({ ok: false, msg: "user already exist please login" });
-  var verifyCode = Math.floor(Math.random() * (99999 - 10000)) + 10000;
+  //TODO HASH password
 
-  await User.create({ Email, verifyCode, Password });
-  return res
-    .status(200)
-    .json({ ok: true, msg: "new user Added please verify email" });
+  var user = new User({ Username });
+  user.Password = await user.createHash(Password);
+  user.Email = Email;
+
+  await user.save();
+  var token = user.generateAuthToken();
+  return res.status(200).json({
+    ok: true,
+    data: {
+      token: token,
+    },
+  });
 });
-
-//TODO check for is email verified
 router.post("/login", async (req, res) => {
-  const { Email, Password } = req.body;
-  if (!isEmail(Email) || !Password.length < 5)
+  const { Username, Password } = req.body;
+  if (Password.length < 5)
     return res.status(400).json({ ok: false, msg: "check input" });
-  var user = await User.findOne({ Email: Email, Password: Password });
-  if (user) {
-    if (!user.verifiedEmail) {
-      //TODO send mail to user
-    }
+  var user = await User.findOne({ Username: Username });
+  var passCheck = await user.validatePassword(Password);
+  if (user && passCheck) {
     var token = user.generateAuthToken();
     return res.status(200).json({ ok: true, data: { token: token } });
   } else {
@@ -44,25 +50,16 @@ router.get("/", auth, async (req, res) => {
   return res.status(200).json({ ok: true, data: user });
 });
 router.post("/", auth, async (req, res) => {
-  const { Email, Password } = req.body;
-  if (!isEmail(Email) || !Password.length < 5)
+  const { Username, Password, Email } = req.body;
+  if (!Password.length < 5 || !isEmail(Email))
     return res.status(400).json({ ok: false, msg: "check input" });
 
-  await User.findOneAndUpdate({ _id: req.user._id }, { Email, Password });
+  var user = await User.findOne({ _id: req.user._id });
+  user.Password = await user.createHash(Password);
+  user.Username = Username;
+  user.Email = Email;
+  await user.save();
   return res.status(200).json({ ok: true, msg: "user Edited" });
-});
-router.post("/verify", async (req, res) => {
-  const { verifyCode, Email } = req.body;
-  if (!isEmail(Email) || !verifyCode.length != 5)
-    return res.status(400).json({ ok: false, msg: "check input" });
-  var user = await User.findOneAndUpdate(
-    { Email, verifyCode },
-    { verifyCode: "99999999", verifiedEmail: true },
-    { new: true }
-  );
-
-  if (user) return res.status(200).json({ ok: true, data: user });
-  else return res.status(404).json({ ok: false, msg: "user not found" });
 });
 
 module.exports = router;

@@ -2,6 +2,8 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var swagger = require("./utils/swagger");
+const cors = require("cors");
+
 /////////
 var admin = require("./RestApi/routes/admin");
 var user = require("./RestApi/routes/user");
@@ -21,6 +23,7 @@ mongoose
     console.error("Could not Connect To MongoDb");
     console.error(e);
   });
+
 process.on("uncaughtException", function (err) {
   console.log(err);
   console.log("Caught exception: ");
@@ -28,6 +31,7 @@ process.on("uncaughtException", function (err) {
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
+app.use(cors());
 //TODO add route for booking
 
 app.use("/admin", admin);
