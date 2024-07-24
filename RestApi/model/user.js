@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const userSchema = new mongoose.Schema({
+  Name: {
+    type: String,
+  },
+
   Username: {
     type: String,
   },
@@ -15,7 +19,7 @@ const userSchema = new mongoose.Schema({
   },
   verifiedEmail: { type: Boolean, default: false },
   Role: {
-    type: string,
+    type: String,
     default: "user",
     enum: ["user", "manager", "movie-seller", "event-manager", "super-admin"],
   },

@@ -6,7 +6,7 @@ const eventSchema = new mongoose.Schema({
   createdDate: { type: Date, default: Date.now },
   eventDate: { type: Date, required: true },
   eventName: { type: String, required: true },
-  eventAdmin: { type: mongoose.Schema.ObjectId, required: true },
+  // eventAdmin: { type: mongoose.Schema.ObjectId, required: true },
 
   eventType: { type: "String", enum: ["movie", "activity", "event"] },
   genre: { type: String },

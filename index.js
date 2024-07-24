@@ -8,6 +8,10 @@ const cors = require("cors");
 var admin = require("./RestApi/routes/admin");
 var user = require("./RestApi/routes/user");
 var event = require("./RestApi/routes/event");
+var reserve = require("./RestApi/routes/reserve");
+
+
+
 ////////
 var app = express();
 require("dotenv").config();
@@ -37,6 +41,8 @@ app.use(cors());
 app.use("/admin", admin);
 app.use("/user", user);
 app.use("/event", event);
+app.use("/reserve", reserve);
+
 app.use("/api-docs", swagger);
 
 //user

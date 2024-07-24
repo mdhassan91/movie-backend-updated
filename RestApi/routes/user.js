@@ -5,8 +5,12 @@ const User = require("../model/user");
 const { isEmail } = require("validator");
 var router = express.Router();
 
+
+
+
+
 router.put("/", async (req, res) => {
-  const { Username, Password, Email } = req.body;
+  const {Name, Username, Password, Email } = req.body;
   //TODO check for empty
   if (!isEmail(Email)) {
     return res.status(400).json({ ok: false, msg: "check Email" });
@@ -19,7 +23,7 @@ router.put("/", async (req, res) => {
       .json({ ok: false, msg: "user already exist please login" });
   //TODO HASH password
 
-  var user = new User({ Username });
+  var user = new User({ Name,Username });
   user.Password = await user.createHash(Password);
   user.Email = Email;
 
@@ -32,11 +36,57 @@ router.put("/", async (req, res) => {
     },
   });
 });
+
+// router.put("/", async (req, res) => {
+//   const { Name, Username, Password, Email } = req.body;
+//   console.log(req.body);
+
+//   // Check for empty fields (optional, adjust as needed)
+//   if (!Name || !Username || !Password || !Email) {
+//     return res
+//       .status(400)
+//       .json({ ok: false, msg: "Please fill in all fields." });
+//   }
+
+//   // Validate email format
+//   if (!isEmail(Email)) {
+//     return res.status(400).json({ ok: false, msg: "Invalid email format." });
+//   }
+
+//   // Check for existing user by email and username (combine checks)
+//   const existingUser = await User.findOne({ $or: [{ Email }, { Username }] });
+//   if (existingUser) {
+//     return res
+//       .status(400)
+//       .json({ ok: false, msg: "Username or email already exists." });
+//   }
+
+//   // Hash password before creating user
+//   const hashedPassword = await user.createHash(Password);
+
+//   // Create new user instance
+//   let user = new User({ Name, Username, Email, Password: hashedPassword });
+
+//   try {
+//     await user.save();
+//     const token = user.generateAuthToken();
+//     return res.status(201).json({ ok: true, data: { token } }); // Use 201 for created resources
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ ok: false, msg: "Error creating user." });
+//   }
+// });
+
 router.post("/login", async (req, res) => {
   const { Username, Password } = req.body;
+  console.log(req.body);
   if (Password.length < 5)
     return res.status(400).json({ ok: false, msg: "check input" });
-  var user = await User.findOne({ Username: Username });
+  // var user = await User.findOne({ Username: Username });
+  const user = await User.findOne({ Username });
+  if (!user) {
+    return res.status(400).json({ ok: false, msg: "User not found" });
+  }
   var passCheck = await user.validatePassword(Password);
   if (user && passCheck) {
     var token = user.generateAuthToken();
@@ -51,8 +101,10 @@ router.get("/", auth, async (req, res) => {
 });
 router.post("/", auth, async (req, res) => {
   const { Username, Password, Email } = req.body;
-  if (!Password.length < 5 || !isEmail(Email))
-    return res.status(400).json({ ok: false, msg: "check input" });
+  console.log(req.body)
+  console.log(req)
+  // if (!Password.length < 5 || !isEmail(Email))
+  //   return res.status(400).json({ ok: false, msg: "check input" });
 
   var user = await User.findOne({ _id: req.user._id });
   user.Password = await user.createHash(Password);

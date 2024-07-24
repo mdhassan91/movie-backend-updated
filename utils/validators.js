@@ -8,7 +8,7 @@ var isEventType = (text) => {
   var eventTypes = ["movie", "activity", "event"];
   return eventTypes.includes(text);
 };
-var isActivityType = (text) => {
+var isActivityType = (text) => { 
   var activityTypes = ["outdoor", "indoor"];
 
   return activityTypes.includes(text);
