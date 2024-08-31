@@ -29,6 +29,9 @@ const userSchema = new mongoose.Schema({
       Device: { type: String },
     },
   ],
+  
+  createdBy: { type: mongoose.Schema.ObjectId },
+
 });
 
 userSchema.methods.generateAuthToken = function () {
